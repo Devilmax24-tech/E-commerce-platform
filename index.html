@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>FreshCut – Raw Chicken & Meat Delivery</title>
+  <meta name="description" content="Order fresh raw chicken and meat delivered to your restaurant. Daily fresh stock, best prices – like Blinkit for meat!"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="customer.css"/>
+</head>
+<body>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header class="header" id="header">
+  <div class="header-brand-row">
+    <div class="logo-wrap">
+      <div class="logo-large">
+        <img
+          class="logo-image-large"
+          src="https://dummyimage.com/160x160/0c831f/ffffff&text=FreshCut"
+          alt="FreshCut logo"
+        />
+        <div class="logo-copy-large">
+          <h1 class="logo-text-large">Fresh<span>Cut</span></h1>
+          <p class="logo-tagline-large">Premium raw chicken and mutton delivery</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Hidden input to prevent JS errors -->
+  <input type="hidden" id="searchInput" value="" />
+</header>
+
+<!-- ═══════════ CATEGORY CHIPS ═══════════ -->
+<div class="categories-wrap">
+  <div class="categories-scroll" id="categoriesScroll">
+    <button class="cat-chip active" data-cat="all" id="catAll">All</button>
+    <button class="cat-chip" data-cat="chicken" id="catChicken">Chicken</button>
+    <button class="cat-chip" data-cat="chicken-leg" id="catChickenLeg">Chicken Leg</button>
+    <button class="cat-chip" data-cat="mutton" id="catMutton">Mutton</button>
+  </div>
+</div>
+
+<!-- ═══════════ LIVE PRICE TICKER ═══════════ -->
+<div class="price-ticker" id="priceTicker">
+  <span class="ticker-label">LIVE PRICES</span>
+  <div class="ticker-scroll" id="tickerScroll">Loading…</div>
+</div>
+
+<!-- ═══════════ PRODUCTS ═══════════ -->
+<main class="main-wrap">
+  <div class="section-label" id="sectionLabel">
+    <span id="sectionLabelText"> All Products</span>
+    <span class="section-count" id="sectionCount"></span>
+  </div>
+  <div class="products-grid" id="productsGrid">
+    <div class="skel-card"></div>
+    <div class="skel-card"></div>
+    <div class="skel-card"></div>
+    <div class="skel-card"></div>
+    <div class="skel-card"></div>
+    <div class="skel-card"></div>
+  </div>
+</main>
+
+<!-- ═══════════ CART BAR ═══════════ -->
+<div class="cart-bar" id="cartBar" style="display:none;">
+  <div class="cart-bar-info">
+    <span class="cart-bar-count" id="cartCount">0 items</span>
+    <span class="cart-bar-sub">added to order</span>
+  </div>
+  <button class="cart-bar-btn" id="cartBarBtn">
+    View Order · <span id="cartTotal">₹0</span> →
+  </button>
+</div>
+
+<!-- ═══════════ ORDER MODAL ═══════════ -->
+<div class="modal-overlay" id="orderModal">
+  <div class="modal-sheet">
+    <div class="sheet-handle"></div>
+    <button class="modal-close" id="modalClose">✕</button>
+
+    <div class="modal-header-area">
+      <h2 class="modal-title">Your Order</h2>
+      <p class="modal-sub">Confirm items & fill details</p>
+    </div>
+
+    <!-- Cart items summary -->
+    <div class="cart-items-list" id="cartItemsList"></div>
+
+    <div class="modal-divider"></div>
+    <h3 class="form-section-title">📍 Delivery Details</h3>
+
+    <form class="order-form" id="orderForm" novalidate>
+      <div class="form-group">
+        <label class="form-label required" for="restaurantName">Restaurant / Shop Name</label>
+        <input type="text" id="restaurantName" class="form-input" placeholder="e.g. Hotel Spice Garden"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label required" for="address">Full Address</label>
+        <textarea id="address" class="form-input" rows="2" placeholder="Street, Locality, Area"></textarea>
+      </div>
+      <div class="form-row2">
+        <div class="form-group">
+          <label class="form-label required" for="pinCode">Pin Code</label>
+          <input type="tel" id="pinCode" class="form-input" placeholder="560001" maxlength="6"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label required" for="phone">Phone No.</label>
+          <input type="tel" id="phone" class="form-input" placeholder="9876543210" maxlength="10"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="contactName">Contact Name <span class="opt-tag">(optional)</span></label>
+        <input type="text" id="contactName" class="form-input" placeholder="Your name"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label required" for="deliverySlot">Preferred Delivery Slot</label>
+        <select id="deliverySlot" class="form-input">
+          <option value="Morning (6:00 AM - 8:00 AM)">Morning (6:00 AM - 8:00 AM)</option>
+          <option value="Mid-Morning (9:00 AM - 11:00 AM)" selected>Mid-Morning (9:00 AM - 11:00 AM)</option>
+          <option value="Afternoon (12:00 PM - 2:00 PM)">Afternoon (12:00 PM - 2:00 PM)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="orderNote">Instructions <span class="opt-tag">(optional)</span></label>
+        <textarea id="orderNote" class="form-input" rows="2" placeholder="Cutting style, skin-on/off, etc."></textarea>
+      </div>
+
+      <!-- Coupon / Promo code section -->
+      <div class="promo-wrap">
+        <label class="promo-label">🏷️ Have a Coupon Code?</label>
+        <div class="promo-row">
+          <input type="text" id="promoInput" class="promo-input" placeholder="e.g. FRESH10" />
+          <button type="button" id="promoApplyBtn" class="promo-btn">Apply</button>
+        </div>
+        <div id="promoMessage" class="promo-message" style="display:none;"></div>
+      </div>
+
+      <div class="order-bill-row">
+        <div class="bill-label">Total Bill</div>
+        <div class="bill-amount" id="formTotal">₹0</div>
+      </div>
+
+      <button type="submit" class="btn-place-order" id="submitBtn">
+        <span id="submitText">Place Order</span>
+        <span id="submitSpinner" class="spinner" style="display:none;"></span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════════ SUCCESS ═══════════ -->
+<div class="success-screen" id="successOverlay" style="display:none;">
+  <div class="success-inner">
+    <div class="success-tick">✅</div>
+    <h2>Order Placed!</h2>
+    <p>We'll contact you on <strong id="confirmPhone"></strong> to confirm.</p>
+    <div class="success-id">Order ID<br/><strong id="confirmOrderId"></strong></div>
+    <button class="btn-place-order" id="newOrderBtn" style="max-width:260px;margin:auto;">Order Again</button>
+  </div>
+</div>
+
+<!-- ═══════════ PRODUCT DETAIL MODAL ═══════════ -->
+<div class="pd-modal-overlay" id="productDetailModal">
+  <div class="pd-modal-card">
+    <button class="pd-close" id="pdCloseBtn">✕</button>
+    <div class="pd-image">
+      <img id="pdImg" src="" alt="Product Image" />
+    </div>
+    <div class="pd-body">
+      <span class="pd-category-tag" id="pdCategory">Category</span>
+      <h2 class="pd-name" id="pdName">Product Name</h2>
+      <div class="pd-meta">
+        <div class="pd-price" id="pdPrice">₹0</div>
+        <div class="pd-unit" id="pdUnit">1 kg</div>
+      </div>
+      <div>
+        <h4 class="pd-desc-title">Description & Quality</h4>
+        <p class="pd-desc-text" id="pdDescription">Our premium raw meat is fresh, tender, and hygienically cut daily. Never frozen, preserving maximum flavor, moisture, and nutritional value.</p>
+      </div>
+      <div>
+        <h4 class="pd-desc-title">Storage Instructions</h4>
+        <p class="pd-desc-text">Store at temperatures below 4°C. Consume within 24 hours of delivery for absolute best quality.</p>
+      </div>
+      <div class="pd-action-box" id="pdActionBox">
+        <!-- Will hold add/stepper HTML dynamically -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ FAQ SECTION ═══════════ -->
+<section class="faq-section">
+  <h3 class="faq-title">🙋 Frequently Asked Questions</h3>
+  <div class="faq-container">
+    <div class="faq-item">
+      <button class="faq-question">How do you guarantee freshness?</button>
+      <div class="faq-answer">
+        <p>We source all our chicken and mutton daily at 4:30 AM directly from certified local farms. The meat is cleaned, cut, packaged under temperature-controlled environments, and delivered directly to your doorstep within 2 hours. We never sell frozen or day-old stock.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question">What are the delivery slots available?</button>
+      <div class="faq-answer">
+        <p>We offer three priority slots: Early Morning (6:00 AM - 8:00 AM), Mid-Morning (9:00 AM - 11:00 AM), and Afternoon (12:00 PM - 2:00 PM). You can choose your preferred slot in the checkout form.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question">Is the meat halal certified?</button>
+      <div class="faq-answer">
+        <p>Yes, all our chicken and mutton products are 100% Halal certified and prepared following standard safety regulations in clean, sanitized facilities.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question">Do you support bulk orders for restaurants?</button>
+      <div class="faq-answer">
+        <p>Absolutely! Most of our regular customers are restaurants. You can register your restaurant details in our system to receive daily price updates. For custom bulk pricing above 20kg, please contact our support team.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-brand-col">
+      <div class="footer-logo">
+        <img
+          class="footer-logo-image"
+          src="https://dummyimage.com/96x96/0c831f/ffffff&text=FC"
+          alt="FreshCut logo"
+        />
+        <span>FreshCut</span>
+      </div>
+      <p class="footer-desc">Premium raw chicken and goat meat delivery directly to your restaurant kitchen. 100% fresh daily stock, processed under strict hygiene standards.</p>
+      <div class="footer-badge-grid">
+        <div class="footer-badge-item">Hygiene Certified</div>
+        <div class="footer-badge-item">2hr Priority Delivery</div>
+      </div>
+    </div>
+    
+    <div class="footer-links-col">
+      <h4>Categories</h4>
+      <ul>
+        <li><a href="#" onclick="document.getElementById('catChicken').click(); return false;">Fresh Chicken</a></li>
+        <li><a href="#" onclick="document.getElementById('catMutton').click(); return false;">Goat Mutton</a></li>
+        <li><a href="#" onclick="document.getElementById('catAll').click(); return false;">All Products</a></li>
+      </ul>
+    </div>
+    
+    <div class="footer-links-col">
+      <h4>Support & Order</h4>
+      <ul>
+        <li><span class="footer-info-lbl">Helpline:</span> <a href="tel:+919876543210" class="footer-info-val">+91 98765 43210</a></li>
+        <li><span class="footer-info-lbl">WhatsApp:</span> <a href="https://wa.me/919876543210" target="_blank" class="footer-info-val">Click to Chat</a></li>
+        <li><span class="footer-info-lbl">Hours:</span> <span class="footer-info-val">5:00 AM – 2:00 PM Daily</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 FreshCut Raw Meat Supply. All rights reserved. Designed for professional kitchens.</p>
+  </div>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="customer.js"></script>
+</body>
+</html>

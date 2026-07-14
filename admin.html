@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>FreshCut Admin – Dashboard</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+
+<!-- ========== LOGIN SCREEN ========== -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <span>🥩</span>
+      <span class="login-logo-text">FreshCut Admin</span>
+    </div>
+    <h2 class="login-title">Admin Login</h2>
+    <p class="login-sub">Enter your credentials to access the dashboard</p>
+    <form id="loginForm" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="adminUser">Username</label>
+        <input type="text" id="adminUser" class="form-input" placeholder="admin" autocomplete="username" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="adminPass">Password</label>
+        <div class="pass-wrap">
+          <input type="password" id="adminPass" class="form-input" placeholder="••••••••" autocomplete="current-password" />
+          <button type="button" class="toggle-pass" id="togglePass">👁</button>
+        </div>
+      </div>
+      <p class="login-error" id="loginError"></p>
+      <button type="submit" class="btn-login" id="loginBtn">
+        <span id="loginText">Login →</span>
+        <span class="spinner" id="loginSpinner" style="display:none;"></span>
+      </button>
+    </form>
+    <p class="login-hint">Default: admin / freshcut2024</p>
+  </div>
+</div>
+
+<!-- ========== MAIN DASHBOARD ========== -->
+<div class="dashboard" id="dashboard" style="display:none;">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span>🥩</span>
+      <span>FreshCut</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item active" data-tab="orders" id="navOrders">
+        <span class="nav-icon">📋</span><span class="nav-label">Orders</span>
+      </a>
+      <a class="nav-item" data-tab="prices" id="navPrices">
+        <span class="nav-icon">💰</span><span class="nav-label">Prices</span>
+      </a>
+      <a class="nav-item" data-tab="financial" id="navFinancial">
+        <span class="nav-icon">📊</span><span class="nav-label">Financial</span>
+      </a>
+      <a class="nav-item" data-tab="restaurants" id="navRestaurants">
+        <span class="nav-icon">🏪</span><span class="nav-label">Restaurants</span>
+      </a>
+    </nav>
+    <button class="btn-logout" id="logoutBtn">⎋ Logout</button>
+  </aside>
+
+  <!-- Mobile Nav Bar -->
+  <nav class="mobile-nav">
+    <a class="mnav-item active" data-tab="orders">
+      <span class="mnav-icon">📋</span><span>Orders</span>
+    </a>
+    <a class="mnav-item" data-tab="prices">
+      <span class="mnav-icon">💰</span><span>Prices</span>
+    </a>
+    <a class="mnav-item" data-tab="financial">
+      <span class="mnav-icon">📊</span><span>Finance</span>
+    </a>
+    <a class="mnav-item" data-tab="restaurants">
+      <span class="mnav-icon">🏪</span><span>Restaurants</span>
+    </a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- ── HEADER ── -->
+    <div class="dash-header">
+      <div>
+        <h1 class="dash-title" id="tabTitle">Orders</h1>
+        <div class="dash-date" id="dashDate"></div>
+      </div>
+      <div class="dash-stats-mini" id="dashStatsMini">
+        <div class="mini-stat">
+          <span class="mini-stat-val" id="miniOrders">–</span>
+          <span class="mini-stat-lbl">Today Orders</span>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-stat-val" id="miniRevenue">–</span>
+          <span class="mini-stat-lbl">Today Revenue</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ────────────────────────────────────────
+         TAB: ORDERS
+    ──────────────────────────────────────── -->
+    <div class="tab-content active" id="tabOrders">
+
+      <!-- Filters -->
+      <div class="filter-bar">
+        <input type="date" id="filterDate" class="filter-input" />
+        <input type="text" id="filterSearch" class="filter-input" placeholder="Search restaurant…" />
+        <select id="filterStatus" class="filter-input">
+          <option value="">All Status</option>
+          <option value="pending">Pending</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="delivered">Delivered</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+
+      <div id="ordersList"></div>
+    </div>
+
+    <!-- ────────────────────────────────────────
+         TAB: PRICES
+    ──────────────────────────────────────── -->
+    <div class="tab-content" id="tabPrices">
+      <div class="section-card">
+        <div class="card-header">
+          <h3>🏷️ Live Product Prices</h3>
+          <span class="card-sub">Update today's prices. Previous prices shown if not updated.</span>
+        </div>
+        <div class="price-last-updated" id="priceLastUpdated"></div>
+        <div id="pricesList"></div>
+        <div class="add-product-section">
+          <h4>➕ Add New Product</h4>
+          <form id="addProductForm" class="add-product-form">
+            <input type="text" id="newProductEmoji" class="form-input" placeholder="Emoji (e.g. 🍗)" maxlength="4" style="width:80px;" />
+            <input type="text" id="newProductName" class="form-input" placeholder="Product Name" required />
+            <input type="text" id="newProductUnit" class="form-input" placeholder="Unit (e.g. per kg)" required />
+            <input type="number" id="newProductPrice" class="form-input" placeholder="Price (₹)" min="1" required />
+            <input type="url" id="newProductImageUrl" class="form-input" placeholder="Image URL (optional)" style="flex: 1 1 100%; margin-top: 10px;" />
+            <button type="submit" class="btn-primary" style="margin-top: 10px;">Add Product</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ────────────────────────────────────────
+         TAB: FINANCIAL
+    ──────────────────────────────────────── -->
+    <div class="tab-content" id="tabFinancial">
+
+      <!-- Summary Cards -->
+      <div class="fin-summary-grid" id="finSummaryGrid">
+        <div class="fin-card fin-total">
+          <div class="fin-card-icon">💰</div>
+          <div class="fin-card-val" id="finTotalAmount">₹0</div>
+          <div class="fin-card-lbl">Total Billed</div>
+        </div>
+        <div class="fin-card fin-received">
+          <div class="fin-card-icon">✅</div>
+          <div class="fin-card-val" id="finReceivedAmount">₹0</div>
+          <div class="fin-card-lbl">Total Received</div>
+        </div>
+        <div class="fin-card fin-due">
+          <div class="fin-card-icon">⚠️</div>
+          <div class="fin-card-val" id="finDueAmount">₹0</div>
+          <div class="fin-card-lbl">Total Dues</div>
+        </div>
+      </div>
+
+      <!-- Date Filter for Financial -->
+      <div class="filter-bar" style="margin-top:20px;">
+        <input type="date" id="finFilterFrom" class="filter-input" placeholder="From Date"/>
+        <input type="date" id="finFilterTo" class="filter-input" placeholder="To Date"/>
+        <button class="btn-primary" id="finFilterBtn" style="padding:10px 18px;">Filter</button>
+        <button class="btn-ghost" id="finClearBtn" style="padding:10px 18px;">Clear</button>
+      </div>
+
+      <div id="financialList" style="margin-top:16px;"></div>
+    </div>
+
+    <!-- ────────────────────────────────────────
+         TAB: RESTAURANTS
+    ──────────────────────────────────────── -->
+    <div class="tab-content" id="tabRestaurants">
+      <div class="section-card">
+        <div class="card-header">
+          <h3>🏪 Restaurant Overview</h3>
+          <span class="card-sub">All restaurants that have placed orders</span>
+        </div>
+        <div id="restaurantsList"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── ORDER DETAIL MODAL ── -->
+<div class="modal-overlay" id="orderDetailModal">
+  <div class="modal-box" id="orderDetailBox"></div>
+</div>
+
+<!-- ── PAYMENT MODAL ── -->
+<div class="modal-overlay" id="paymentModal">
+  <div class="modal-box">
+    <button class="modal-close" id="paymentModalClose">✕</button>
+    <h3 class="modal-title" style="margin-bottom:6px;">💳 Record Payment</h3>
+    <p class="modal-sub" id="paymentRestaurantName" style="margin-bottom:16px;"></p>
+
+    <div class="payment-summary" id="paymentSummary"></div>
+
+    <form id="paymentForm" style="margin-top:16px;">
+      <input type="hidden" id="paymentOrderId" />
+      <div class="form-group">
+        <label class="form-label">Amount Received (₹)</label>
+        <input type="number" id="paymentAmount" class="form-input" placeholder="Enter amount received" min="0" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Payment Note (optional)</label>
+        <input type="text" id="paymentNote" class="form-input" placeholder="Cash / UPI / etc." />
+      </div>
+      <button type="submit" class="btn-primary" style="width:100%;margin-top:8px;">✅ Record Payment</button>
+    </form>
+  </div>
+</div>
+
+<!-- ── RESTAURANT ORDERS MODAL ── -->
+<div class="modal-overlay" id="restaurantModal">
+  <div class="modal-box" id="restaurantModalBox"></div>
+</div>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
